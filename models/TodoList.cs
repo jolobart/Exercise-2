@@ -25,16 +25,9 @@ namespace Exercise2
                 this.TodoItem = this.TodoItem.Where(item => item.GetItemId() != id).ToList();
             }
 
-            public void GetToDoItems()
+            public List<TodoItem> GetToDoItems()
             {
-                foreach (TodoItem item in this.TodoItem)
-                {
-                    Console.WriteLine("=======================");
-                    Console.WriteLine("Item id: " + item.GetItemId());
-                    Console.WriteLine("Item content: " + item.GetItemContent());
-                    Console.WriteLine("Item status: " + item.GetItemStatus());
-                    Console.WriteLine("=======================");
-                }
+                return this.TodoItem;
             }
 
             public TodoItem GetTodoListItemById(int id)

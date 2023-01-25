@@ -1,4 +1,7 @@
 ﻿using Exercise2.Models;
+using Exercise2.Interfaces;
+using Exercise2.Services;
+using Exercise2.Conf;
 
 namespace Exercise2
 {
@@ -6,7 +9,11 @@ namespace Exercise2
     {
         static void Main(string[] args)
         {
-            List<TodoList> myLists = new List<TodoList>();
+            ITodoListService todoListService = new TodoListServiceContext();
+            ITodoItemService todoItemService = new TodoItemServiceContext();
+
+            var myLists = todoListService.GetAll();
+            // List<TodoList> myLists = new List<TodoList>();
             bool isMainMenu = true;
 
             do
@@ -61,7 +68,8 @@ namespace Exercise2
 
                         Console.WriteLine("=======================");
 
-                        var list = myLists.FirstOrDefault(list => list.GetTodoListId() == id);
+                        // var list = myLists.FirstOrDefault(list => list.GetTodoListId() == id);
+                        var list = todoListService.FindById(id);
 
                         if (list != null)
                         {
@@ -84,21 +92,22 @@ namespace Exercise2
                     else if (choice == 3)
                     {
                         Console.WriteLine("Selected option: Create New List");
-
                         Console.Write("Enter name of the list: ");
                         string name = Console.ReadLine();
-                        myLists.Add(new TodoList(myLists.Count + 1, name));
+                        var createdList = todoListService.Save(new TodoList(myLists.Count + 1, name));
+                        Console.WriteLine("List Added: ");
+                        Console.WriteLine("Id: " + createdList.GetTodoListId());
+                        Console.WriteLine("Name: " + createdList.GetTodoListName());
+                        Console.WriteLine("=======================");
                         isSelection = false;
                     }
                     else if (choice == 4)
                     {
                         Console.WriteLine("=======================");
                         Console.WriteLine("Selected option: Select List");
-
                         Console.Write("Enter the id of the list: ");
                         int id = int.Parse(Console.ReadLine());
-
-                        var selectedList = myLists.FirstOrDefault(list => list.GetTodoListId() == id);
+                        var selectedList = todoListService.FindById(id);
 
                         if (selectedList != null)
                         {
@@ -126,7 +135,13 @@ namespace Exercise2
                                         if (selectedList.GetTodoItemCount() > 0)
                                         {
                                             Console.WriteLine(selectedList.GetTodoListName() + " all items: ");
-                                            selectedList.GetToDoItems();
+                                            var items = selectedList.GetToDoItems();
+
+                                            foreach (TodoItem item in items)
+                                            {
+                                                Console.WriteLine("Item id: " + item.GetItemId());
+                                                Console.WriteLine("Item content: " + item.GetItemContent());
+                                            }
                                         }
                                         else
                                         {
@@ -139,7 +154,10 @@ namespace Exercise2
                                     {
                                         Console.Write("Enter content of the item: ");
                                         string content = Console.ReadLine();
-                                        selectedList.AddTodoItem(new TodoItem(selectedList.GetTodoItemCount() + 1, content));
+                                        var newItem = todoItemService.Save(selectedList.GetTodoListId(), new TodoItem(selectedList.GetTodoItemCount() + 1, content));
+                                        Console.WriteLine("Item added for: " + selectedList.GetTodoListName());
+                                        Console.WriteLine("Item id: " + newItem.GetItemId());
+                                        Console.WriteLine("Item content: " + newItem.GetItemContent());
                                         isItemMenuSelection = false;
                                     }
                                     else if (itemMenuChoice == 3)
@@ -147,11 +165,11 @@ namespace Exercise2
                                         Console.Write("Enter the id of the item to be removed: ");
                                         int selectedItemId = int.Parse(Console.ReadLine());
 
-                                        var item = selectedList.GetTodoListItemById(selectedItemId);
-
+                                        // var item = selectedList.GetTodoListItemById(selectedItemId);
+                                        var item = todoItemService.FindById(selectedItemId, selectedItemId);
                                         if (item != null)
                                         {
-                                            selectedList.RemoveTodoItem(selectedItemId);
+                                            todoItemService.Delete(selectedList.GetTodoListId(), item);
                                             Console.WriteLine("Item successfully removed. Redirecting to Item Menu...");
                                         }
                                         else
@@ -166,7 +184,7 @@ namespace Exercise2
                                         Console.Write("Enter the id of the item to be updated: ");
                                         int selectedItemId = int.Parse(Console.ReadLine());
 
-                                        var item = selectedList.GetTodoListItemById(selectedItemId);
+                                        var item = todoItemService.FindById(selectedItemId, selectedItemId);
 
                                         if (item != null)
                                         {
