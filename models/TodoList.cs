@@ -4,7 +4,7 @@ namespace Exercise2
     {
         public class TodoList
         {
-            public int Id;
+            private int Id;
             private string Name;
             private List<TodoItem> TodoItem;
 
