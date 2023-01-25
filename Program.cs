@@ -8,7 +8,6 @@ namespace Exercise2
         {
             List<TodoList> myLists = new List<TodoList>();
             bool isMainMenu = true;
-            int listId = 1;
 
             do
             {
@@ -57,7 +56,7 @@ namespace Exercise2
                         Console.WriteLine("=======================");
                         Console.WriteLine("Selected option: Show Items");
 
-                        Console.Write("Enter an id of a list: ");
+                        Console.Write("Enter the id of the list: ");
                         int id = int.Parse(Console.ReadLine());
 
                         Console.WriteLine("=======================");
@@ -84,13 +83,11 @@ namespace Exercise2
                     }
                     else if (choice == 3)
                     {
-                        Console.WriteLine("=======================");
                         Console.WriteLine("Selected option: Create New List");
 
                         Console.Write("Enter name of the list: ");
                         string name = Console.ReadLine();
-                        myLists.Add(new TodoList(listId, name));
-                        listId++;
+                        myLists.Add(new TodoList(myLists.Count + 1, name));
                         isSelection = false;
                     }
                     else if (choice == 4)
@@ -102,7 +99,7 @@ namespace Exercise2
                         int id = int.Parse(Console.ReadLine());
 
                         var selectedList = myLists.FirstOrDefault(list => list.GetTodoListId() == id);
-                        int itemId = 1;
+
                         if (selectedList != null)
                         {
                             bool isItemMenu = true;
@@ -142,8 +139,7 @@ namespace Exercise2
                                     {
                                         Console.Write("Enter content of the item: ");
                                         string content = Console.ReadLine();
-                                        selectedList.AddTodoItem(new TodoItem(itemId, content));
-                                        itemId++;
+                                        selectedList.AddTodoItem(new TodoItem(selectedList.GetTodoItemCount() + 1, content));
                                         isItemMenuSelection = false;
                                     }
                                     else if (itemMenuChoice == 3)
@@ -151,7 +147,9 @@ namespace Exercise2
                                         Console.Write("Enter the id of the item to be removed: ");
                                         int selectedItemId = int.Parse(Console.ReadLine());
 
-                                        if (selectedList.CheckIfTodoListItemExistById(selectedItemId))
+                                        var item = selectedList.GetTodoListItemById(selectedItemId);
+
+                                        if (item != null)
                                         {
                                             selectedList.RemoveTodoItem(selectedItemId);
                                             Console.WriteLine("Item successfully removed. Redirecting to Item Menu...");
@@ -168,9 +166,10 @@ namespace Exercise2
                                         Console.Write("Enter the id of the item to be updated: ");
                                         int selectedItemId = int.Parse(Console.ReadLine());
 
-                                        if (selectedList.CheckIfTodoListItemExistById(selectedItemId))
+                                        var item = selectedList.GetTodoListItemById(selectedItemId);
+
+                                        if (item != null)
                                         {
-                                            var item = selectedList.GetTodoListItemById(selectedItemId);
                                             item.Update();
                                             Console.WriteLine("Item successfully updated. Redirecting to Item Menu...");
                                         }

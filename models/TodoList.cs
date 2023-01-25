@@ -4,7 +4,7 @@ namespace Exercise2
     {
         public class TodoList
         {
-            private int Id;
+            public int Id;
             private string Name;
             private List<TodoItem> TodoItem;
 
@@ -32,20 +32,9 @@ namespace Exercise2
                     Console.WriteLine("=======================");
                     Console.WriteLine("Item id: " + item.GetItemId());
                     Console.WriteLine("Item content: " + item.GetItemContent());
-                    Console.WriteLine("Item content: " + item.GetItemStatus());
+                    Console.WriteLine("Item status: " + item.GetItemStatus());
                     Console.WriteLine("=======================");
                 }
-            }
-
-            public bool CheckIfTodoListItemExistById(int id)
-            {
-                bool itemExist = false;
-
-                if (this.GetTodoListItemById(id) != null)
-                {
-                    itemExist = true;
-                }
-                return itemExist;
             }
 
             public TodoItem GetTodoListItemById(int id)
